@@ -30,23 +30,7 @@ public:
 			solutions[j]=-1;
 	}
 
-	void create(int r, int c)
-	{
-		rows=r;
-		columns=c;
-
-		matrix = new double*[rows];
-
-		for (int i = 0; i<rows;i++)
-			matrix[i] = new double[columns-1];			
-		
-		solutions = new int[columns];
-		for (int j = 0; j<columns-1;j++)
-			solutions[j]=-1;
-		
-			
-	}
-
+	
 	void fill()
 	{
 		cout<< "Enter the "<< columns-1 << " values for the objective function: ";
@@ -67,6 +51,8 @@ public:
 
 		if ( columns-2>=0)
 			cout<<matrix[rows-1][columns-2]<<"x"<<columns-1<<"\n";
+
+		cout<<"Use the form ax1+bx2...<=c for contrant set input. \n";
 
 		for (int i = 0;i<rows-1;i++)
 		{
@@ -105,22 +91,14 @@ public:
 		for (int a=0;a<columns-1;a++)
 		{
 			if(matrix[rows-1][a]>0)				
-				test = true;			
+				for (int i = 0; i<rows-1;i++)					
+					{
+						if (matrix[i][a]>0)
+						return true;
+					}
 		}
 
-		if (test == true)
-		{
-			for (int i = 0;i<rows-1;i++)
-			{
-				for (int j = 0;j<columns-1;j++)
-				{
-					if (matrix[i][j]>0)
-						return true;
-				}
-			}
-		}		
 		return false;
-
 	}
 
 	int* pivoting_point()
@@ -166,6 +144,7 @@ public:
 	void pivot()
 	{
 		int* pivot_point = pivoting_point();
+
 		if (solutions[pivot_point[1]]==-1)
 			solutions[pivot_point[1]]=pivot_point[0];
 		else
@@ -226,142 +205,57 @@ public:
 
 	void answer()
 	{
-		cout<<"The optimal solution is "<<matrix[rows-1][columns-1]<<" when";
+		bool solution = 1;
 
-		for (int i = 0;i<columns-1;i++)
-		{	
-			if (solutions[i]!=-1)
-				cout<<", x"<<i+1<<" = "<< -matrix[solutions[i]][columns-1];
-			else
-				cout<<", x"<<i+1<<" = "<< 0;
+		for (int a = 0; a<columns-1;a++)
+		{
+			if (matrix[rows-1][a]>0)
+				solution = 0;
 		}
+
+		if (solution == 1)
+		{
+			cout<<"The optimal solution is "<<matrix[rows-1][columns-1]<<" when";
+
+			for (int i = 0;i<columns-1;i++)
+			{	
+				if (solutions[i]!=-1)
+					cout<<", x"<<i+1<<" = "<< -matrix[solutions[i]][columns-1];
+				else
+					cout<<", x"<<i+1<<" = "<< 0;
+			}
 		cout<<"\n";
+		}
+		else
+			cout<<"There is no finite optimal solution.";
 	}
 
 
 	
 };
-
-
-//Code to test main code
-class Test{
-	private:		
-		void print(string a) {cout<<a;}		
-	public:
-		bool run_tests()
-		{
-			//variable to return whether tests failed or passed
-			bool valid = true;
-			//matrix class for testing
-			Matrix matrix1;
-			//first test is to see if a matrix of proper size is created. It is filled with 0s outside the class.
-			double test1[5][4] = {{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
-			matrix1.create(5,4);
-			double** compare = matrix1.get();
-			for (int a=0;a<5;a++)
-				for (int b=0;b<4;b++)
-					compare[a][b]=0;
-			for (int c=0;c<5;c++)
-				for (int d=0;d<4;d++)
-					if (compare[c][d]!=test1[c][d])
-						valid=false;						
-			if (valid==true)
-				print("Matrix creation works \n");
-			if (valid == false)
-			{
-				print("Failed Matrix creation \n");
-				valid = false;
-			}
-
-			//Test matrix filling
-			Matrix matrix2;
-			cout<<"Enter 2 for constrains, 3 for variables. Objective function is 0s. Constraints are a 2x2 identity matrix.\n";
-			matrix2.create();
-			matrix2.fill();
-			matrix2.print();
-			/*compare = matrix2.get();
-			double test2[3][3] = {{1,0,0},{0,1,0},{0,0,0}};			
-			for (int e=0;e<3;e++)
-				for (int f=0;f<3;f++)
-					if (compare[e][f]!=test2[e][f])
-						valid=false;
-
-			if (valid==true)
-				print("Matrix filling works \n");
-			if (valid == false)
-			{
-				print("Failed Matrix filling \n");
-				valid = false;
-			}
-			*/
-
-			Matrix matrix;
-
-			cout<<"enter {{-2,3,-2},{3,2,-5},{2,3,0}}";
-			matrix.create(3,3);
-			matrix.fill();			
-			int* point = matrix.pivoting_point();			
-			compare = matrix.get();			
-			cout<<"\n"<<point[0]<<"  "<<point[1];
-			cout<<"The pivot value is: "<<compare[point[0]][point[1]]<<"\n";
-			cout<<"Enter 1 if it's the same \n";
-			cin>>valid;
-			
-			cout<<	"Testing the completion test \n";
-			cout<<matrix.test_completion();
-
-			cout<<"Testing pivot operation \n";
-
-			matrix.print();
-			matrix.pivot();
-			matrix.print();
-
-			cout<<matrix.test_completion()<<"\n";
-
-			matrix.pivot();
-			matrix.print();
-
-			cout<<matrix.test_completion()<<"\n";
-
-			return valid;
-			
-		}
-};
-
-
 
 int main()
 {
-	bool debug;		
-	cout<<"Enter 1 if you would you like to debug the program before running it, enter anything else to go straight to the program: ";
-	cin>>debug;
-	if (debug == 1)
+	bool loop = 1;
+	while (loop == 1)
 	{
-		cout<<"Debugging \n";
-		Test test;
-		bool test_result = test.run_tests();
-		if (test_result == false)
-			cout<<"Tests failed \n";
-		else
-			cout<<"Tests passed \n";
-	}
-	else
-		cout<<"Running Program \n";
-
-	Matrix matrix;
-	matrix.create();
+		Matrix matrix;
+		matrix.create();
 	
-	matrix.fill();
-	matrix.print();	
+		matrix.fill();
+		matrix.print();	
 
-	while (matrix.test_completion()==true)
-	{		
-		matrix.pivot();
-		matrix.print();		
+		while (matrix.test_completion()==true)
+		{		
+			matrix.pivot();
+			matrix.print();		
+		}
+
+		cout<<"\n";
+		matrix.answer();
+		cout<<"\n Enter 1 if you want to do another, or 0 to stop.";
+		cin>>loop;
 	}
-
-	cout<<"\n";
-	matrix.answer();
 	
 	return 0;
 }
