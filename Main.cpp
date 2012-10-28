@@ -135,8 +135,8 @@ public:
 			}
 		}
 
-		cout<<"\n pivot pointx "<<pivot_pos[0];
-		cout<<"\n pivot pointy "<<pivot_pos[1];
+		cout<<"\nPivot point is at ("<<pivot_pos[0]+1<<","<<pivot_pos[1]+1<<") with a value of "<<matrix[pivot_pos[0]][pivot_pos[1]]<<"\n";
+		
 		return pivot_pos;
 		
 	}	
