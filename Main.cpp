@@ -197,7 +197,7 @@ public:
 			{
 				if (j == columns-1)
 					cout<<"|";
-				cout<<setw(10)<<left<<setprecision(3)<<matrix[i][j];
+				cout<<setw(10)<<left<<setprecision(4)<<matrix[i][j];
 			}
 			cout<<"\n";			
 		}
