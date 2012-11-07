@@ -165,7 +165,7 @@ public:
 	void pivot()
 	{
 		//get pivote point from pivoting method
-		int* pivot_point = pivoting_point();		
+		int* pivot_point = pivoting_point();
 		int hold;
 		//set up tracker for variables
 		hold =	cvariables[pivot_point[1]];
